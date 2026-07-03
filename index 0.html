@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USCA Aiken - Continuing Education Student Dashboard</title>
+  <style>
+    /* ===== USCA Aiken Brand Colors ===== */
+    :root {
+      --garnet: #73000A;
+      --garnet-light: #9e2a2a;
+      --garnet-pale: #f8f0f0;
+      --black: #1a1a1a;
+      --gray-dark: #333;
+      --gray-mid: #5e6b6b;
+      --gray-light: #e6e9e9;
+      --white: #ffffff;
+      --bg: #f4f6f6;
+      --card-shadow: 0 8px 20px -8px rgba(115, 0, 10, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    a { color: var(--garnet); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ===== Top Bar ===== */
+    .topbar {
+      background: var(--garnet);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0 28px;
+      height: 72px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .brand img {
+      display: block;
+      max-height: 44px;
+      width: auto;
+    }
+    /* fallback text (hidden if image works) */
+    .brand-text .name {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .brand-text .tag {
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      color: #f0c2c2;
+      font-weight: 600;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+    .top-nav a {
+      color: #f0d6d6;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    .top-nav a:hover,
+    .top-nav a.on {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .icon-btn {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .icon-btn .dot {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #e6b800;
+      color: #000;
+      font-size: 9px;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--garnet);
+    }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 4px 14px 4px 4px;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+    .avatar-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--garnet);
+      font-weight: 800;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-chip .uname {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    /* ===== Page Header ===== */
+    .page-head {
+      background: linear-gradient(135deg, var(--garnet) 0%, #5a0008 100%);
+      color: #fff;
+      padding: 28px 28px 56px;
+    }
+    .page-head-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #eab8b8;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-head h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin: 0 0 2px;
+    }
+    .page-head .sub {
+      font-size: 14px;
+      color: #f0cfcf;
+    }
+
+    /* ===== Main Wrap ===== */
+    .wrap {
+      max-width: 1240px;
+      margin: -34px auto 0;
+      padding: 0 28px 40px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid var(--gray-light);
+    }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card-head h2 {
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--garnet);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+    .card-head .icon-chip {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: var(--garnet-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .card-head .view-all {
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* Identity Card */
+    .id-card {
+      display: flex;
+      gap: 24px;
+    }
+    .avatar-lg {
+      width: 100px;
+      height: 100px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--garnet), #4d0008);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .id-info {
+      flex: 1;
+    }
+    .id-info h1 {
+      font-size: 22px;
+      margin: 0 0 2px;
+    }
+    .id-program {
+      font-size: 13px;
+      color: var(--garnet);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .id-table {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 18px;
+      font-size: 13px;
+    }
+    .id-table dt {
+      color: var(--gray-mid);
+      font-weight: 600;
+      grid-column: 1;
+    }
+    .id-table dd {
+      margin: 0;
+      grid-column: 2;
+      font-weight: 600;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e2f0ea;
+      color: #1d6b4a;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 3px 12px;
+      border-radius: 20px;
+    }
+    .status-pill::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #1d6b4a;
+    }
+
+    /* Ledger */
+    table.ledger {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+    table.ledger td {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    table.ledger td.amt {
+      text-align: right;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    table.ledger tr.total td {
+      border-top: 2px solid var(--black);
+      border-bottom: none;
+      font-weight: 800;
+      padding-top: 12px;
+    }
+    table.ledger tr.due td {
+      color: var(--garnet);
+      font-weight: 800;
+    }
+    table.ledger tr.datedue td {
+      color: var(--gray-mid);
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .pay-btn {
+      display: block;
+      width: 100%;
+      background: var(--garnet);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .pay-btn:hover {
+      background: var(--garnet-light);
+    }
+
+    /* Courses */
+    .term-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gray-mid);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .course-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .course-row:last-of-type {
+      border-bottom: none;
+    }
+    .course-code {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--garnet);
+      letter-spacing: 0.5px;
+    }
+    .course-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      margin-top: 1px;
+    }
+    .course-start {
+      font-size: 12px;
+      color: var(--gray-mid);
+      margin-top: 2px;
+    }
+    .reg-pill {
+      background: #e2f0ea;
+      color: #1d6b4a;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    /* Progress Ring */
+    .vitals-flex {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .ring-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      flex-shrink: 0;
+    }
+    .ring-wrap svg {
+      transform: rotate(-90deg);
+    }
+    .ring-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .ring-pct .num {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--garnet);
+    }
+    .ring-pct .lbl {
+      font-size: 9px;
+      color: var(--gray-mid);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .progress-detail {
+      flex: 1;
+    }
+    .progress-detail h3 {
+      font-size: 14px;
+      margin: 0 0 4px;
+    }
+    .progress-detail .desc {
+      font-size: 12.5px;
+      color: var(--gray-mid);
+      margin-bottom: 14px;
+    }
+    .hours-row {
+      font-size: 12.5px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+    .bar-bg {
+      background: var(--gray-light);
+      border-radius: 6px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 6px;
+    }
+    .bar-fill.garnet {
+      background: var(--garnet);
+    }
+    .bar-fill.faint {
+      background: #d4c2c2;
+    }
+
+    /* Announcements */
+    .ann-item {
+      border-left: 4px solid var(--garnet);
+      padding: 2px 0 2px 14px;
+      margin-bottom: 18px;
+    }
+    .ann-item:last-child {
+      margin-bottom: 0;
+    }
+    .ann-item.alert-tag {
+      border-left-color: #b8860b;
+    }
+    .ann-item h4 {
+      font-size: 13.5px;
+      margin: 0 0 4px;
+    }
+    .ann-item p {
+      font-size: 12.5px;
+      color: var(--gray-mid);
+      margin: 0 0 5px;
+      line-height: 1.45;
+    }
+    .ann-date {
+      font-size: 11px;
+      color: #8a9b9b;
+    }
+
+    /* Quick links */
+    .quick-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-light);
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+    .quick-link:last-child {
+      border-bottom: none;
+    }
+    .quick-link .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .quick-link .ico {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--garnet-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .quick-link .chev {
+      color: #a0b2b2;
+      font-size: 16px;
+    }
+
+    /* Events */
+    .event-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .event-row:last-of-type {
+      border-bottom: none;
+    }
+    .event-date-box {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--gray-light);
+      border-radius: 10px;
+      text-align: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: #fff;
+    }
+    .event-date-box .mon {
+      background: var(--garnet);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 3px 0;
+      text-transform: uppercase;
+    }
+    .event-date-box .day {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--garnet);
+      padding-top: 4px;
+    }
+    .event-info {
+      flex: 1;
+    }
+    .event-info h4 {
+      font-size: 13px;
+      margin: 0 0 2px;
+    }
+    .event-info .sub {
+      font-size: 12px;
+      color: var(--gray-mid);
+    }
+    .event-time {
+      font-size: 12px;
+      color: var(--gray-mid);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--garnet);
+      color: #f0d6d6;
+      padding: 18px 28px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-top: 2px solid #b8860b;
+    }
+    .footer a {
+      color: #f0d6d6;
+    }
+    .footer a:hover {
+      color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .top-nav {
+        display: none;
+      }
+      .id-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .id-table {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .id-table dt {
+        grid-column: 1;
+      }
+      .id-table dd {
+        grid-column: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========== TOP BAR ========== -->
+<div class="topbar">
+  <!-- BRAND WITH REAL LOGO -->
+  <div class="brand">
+    <img src="usca-logo.webp" alt="USC Aiken Continuing Education" height="44" style="display:block; max-height:44px; width:auto;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+    <!-- Fallback text if image fails -->
+    <div class="brand-text" style="display:none;">
+      <div class="name">USC Aiken</div>
+      <div class="tag">CONTINUING EDUCATION</div>
+    </div>
+  </div>
+
+  <div class="top-nav">
+    <a class="on" href="#">Dashboard</a>
+    <a href="#">My Profile</a>
+    <a href="#">My Courses</a>
+    <a href="#">Financial Services</a>
+    <a href="#">Academic Records</a>
+    <a href="#">Documents</a>
+    <a href="#">Messages</a>
+    <a href="#">Calendar</a>
+    <a href="#">Resources</a>
+  </div>
+  <div class="top-actions">
+    <div class="icon-btn">✉<span class="dot">2</span></div>
+    <div class="icon-btn">🔔<span class="dot">3</span></div>
+    <div class="user-chip">
+      <span class="avatar-sm">VH</span>
+      <span class="uname">Valencia J.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE HEADER ========== -->
+<div class="page-head">
+  <div class="page-head-inner">
+    <div class="eyebrow">Continuing Education · Clinical &amp; Allied Health</div>
+    <h1>Welcome back, Valencia</h1>
+    <div class="sub">Phlebotomy &amp; Clinical Medical Assistant Program — Spring Cohort 2026</div>
+  </div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<div class="wrap">
+  <div class="grid">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <!-- Student Identity Card -->
+      <div class="card id-card">
+        <img src="portrait.jpg" alt="Valencia J. Harris" class="avatar-lg" style="object-fit: cover;">
+        <div class="id-info">
+          <h1>Valencia J. Harris</h1>
+          <div class="id-program">Phlebotomy | Clinical Medical Assistant</div>
+          <dl class="id-table">
+            <dt>Student ID</dt><dd>CMA-2026-48291</dd>
+            <dt>Email</dt><dd><a href="mailto:valjharris7@students.usca.edu">valjharris7@students.usca.edu</a></dd>
+            <dt>Phone</dt><dd>(803) 641-****</dd>
+            <dt>Enrollment Date</dt><dd>April 2026</dd>
+            <dt>Academic Status</dt><dd><span class="status-pill">Active</span></dd>
+            <dt>Campus</dt><dd>USC Aiken - Continuing Education</dd>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Account Summary (Ledger) -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">💰</span>Account Summary</h2>
+          <a href="#" class="view-all">View Account</a>
+        </div>
+        <table class="ledger">
+          <tr><td>MLSCN Licensing Fee</td><td class="amt">$800.00</td></tr>
+          <tr><td>Laboratory Fee</td><td class="amt">$35.00</td></tr>
+          <tr><td>Examination Fee</td><td class="amt">$55.00</td></tr>
+          <tr><td>Registration Fee</td><td class="amt">$125.00</td></tr>
+          <tr><td>Student Services Fee</td><td class="amt">$45.00</td></tr>
+          <tr><td>Technology Fee</td><td class="amt">$30.00</td></tr>
+          <tr class="total"><td>Total Balance</td><td class="amt">$1,090.00</td></tr>
+          <tr class="due"><td>Balance Due</td><td class="amt">$1,090.00</td></tr>
+          <tr class="datedue"><td>Payment Due Date</td><td class="amt">June 28, 2026</td></tr>
+        </table>
+        <button class="pay-btn">Make a Payment</button>
+      </div>
+
+      <!-- My Courses -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">📚</span>My Courses</h2>
+          <a href="#" class="view-all">View My Courses</a>
+        </div>
+        <div class="term-label">Spring 2026</div>
+
+        <div class="course-row">
+          <div>
+            <div class="course-code">PHA 101</div>
+            <div class="course-name">Phlebotomy Fundamentals</div>
+            <div class="course-start">Starts: Apr 6, 2026</div>
+          </div>
+          <span class="reg-pill">Registered</span>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-code">CMA 110</div>
+            <div class="course-name">Clinical Medical Assisting</div>
+            <div class="course-start">Starts: Apr 6, 2026</div>
+          </div>
+          <span class="reg-pill">Registered</span>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-code">CMA 120</div>
+            <div class="course-name">Medical Terminology</div>
+            <div class="course-start">Starts: Apr 6, 2026</div>
+          </div>
+          <span class="reg-pill">Registered</span>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-code">CMA 130</div>
+            <div class="course-name">Patient Care Procedures</div>
+            <div class="course-start">Starts: Apr 6, 2026</div>
+          </div>
+          <span class="reg-pill">Registered</span>
+        </div>
+        <div class="course-row">
+          <div>
+            <div class="course-code">CMA 140</div>
+            <div class="course-name">Medical Ethics &amp; Law</div>
+            <div class="course-start">Starts: Apr 6, 2026</div>
+          </div>
+          <span class="reg-pill">Registered</span>
+        </div>
+
+        <div style="margin-top: 16px;"><a href="#">Go to My Courses →</a></div>
+      </div>
+
+      <!-- Academic Progress -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">📈</span>Academic Progress</h2>
+        </div>
+        <div class="vitals-flex">
+          <div class="ring-wrap">
+            <svg width="120" height="120">
+              <circle cx="60" cy="60" r="51" fill="none" stroke="#e6d6d6" stroke-width="12" />
+              <circle cx="60" cy="60" r="51" fill="none" stroke="#73000A" stroke-width="12"
+                      stroke-dasharray="320.4" stroke-dashoffset="198.6" stroke-linecap="round" />
+            </svg>
+            <div class="ring-pct">
+              <div class="num">38%</div>
+              <div class="lbl">Complete</div>
+            </div>
+          </div>
+          <div class="progress-detail">
+            <h3>Program Progress</h3>
+            <div class="desc">You have completed 38% of your program requirements.</div>
+            <div class="hours-row"><span>Total Required Hours</span><span>600</span></div>
+            <div class="bar-bg"><div class="bar-fill faint" style="width:100%;"></div></div>
+            <div class="hours-row"><span>Completed Hours</span><span>228</span></div>
+            <div class="bar-bg"><div class="bar-fill garnet" style="width:38%;"></div></div>
+            <div class="hours-row"><span>Remaining Hours</span><span>372</span></div>
+            <a href="#">View Progress Details →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <!-- Announcements -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">📣</span>Announcements</h2>
+          <a href="#" class="view-all">View All</a>
+        </div>
+        <div class="ann-item">
+          <h4>Registration Open for Spring 2026</h4>
+          <p>Spring 2026 Continuing Education courses are now open for registration.</p>
+          <div class="ann-date">May 20, 2026</div>
+        </div>
+        <div class="ann-item alert-tag">
+          <h4>Important: Background Check Reminder</h4>
+          <p>All clinical students must complete background check and drug screening prior to clinical.</p>
+          <div class="ann-date">May 15, 2026</div>
+        </div>
+        <div class="ann-item">
+          <h4>Student Orientation</h4>
+          <p>New student orientation will be held online on April 10, 2026 at 10:00 AM.</p>
+          <div class="ann-date">April 1, 2026</div>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">🔗</span>Student Quick Links</h2>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">💰</span>View Financial Aid (If Applicable)</span>
+          <span class="chev">›</span>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">📝</span>Update Personal Information</span>
+          <span class="chev">›</span>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">📤</span>Upload Documents</span>
+          <span class="chev">›</span>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">📊</span>View Academic Progress</span>
+          <span class="chev">›</span>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">🎓</span>Order Official Transcript</span>
+          <span class="chev">›</span>
+        </div>
+        <div class="quick-link">
+          <span class="left"><span class="ico">📘</span>Continuing Education Catalog</span>
+          <span class="chev">›</span>
+        </div>
+      </div>
+
+      <!-- Upcoming Events -->
+      <div class="card">
+        <div class="card-head">
+          <h2><span class="icon-chip">📅</span>Upcoming Events</h2>
+          <a href="#" class="view-all">View Calendar</a>
+        </div>
+        <div class="event-row">
+          <div class="event-date-box"><div class="mon">JUL</div><div class="day">9</div></div>
+          <div class="event-info">
+            <h4>First Day of Classes</h4>
+            <div class="sub">Spring 2026</div>
+          </div>
+          <div class="event-time">8:00 AM</div>
+        </div>
+        <div class="event-row">
+          <div class="event-date-box"><div class="mon">APR</div><div class="day">10</div></div>
+          <div class="event-info">
+            <h4>New Student Orientation</h4>
+            <div class="sub">Online Session</div>
+          </div>
+          <div class="event-time">10:00 AM</div>
+        </div>
+      </div>
+
+    </div>
+    <!-- end right column -->
+
+  </div>
+  <!-- end grid -->
+</div>
+<!-- end wrap -->
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  <span>© 2025/2026 University of South Carolina Aiken — Continuing Education</span>
+  <span>
+    Need Help? <a href="tel:+18036413750">(803) 641-3750</a> |
+    <a href="mailto:ce@usca.edu">ce@usca.edu</a> |
+    471 University Pkwy, Aiken, SC 29801
+  </span>
+</div>
+
+</body>
+</html>
